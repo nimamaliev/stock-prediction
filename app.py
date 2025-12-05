@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # --- 1. SET UP THE PAGE ---
 st.set_page_config(page_title="AI Market Predictor", layout="wide")
-st.title("🤖 AI Stock Swing Trader")
+st.title("🤖 AI Stock Trader")
 st.markdown("Enter a ticker symbol to train a Random Forest model on its history and predict the next 5 days.")
 
 # --- 2. SIDEBAR INPUTS ---
@@ -56,6 +56,19 @@ def get_data(ticker):
         st.error(f"Error finding ticker {ticker}. Try specific format like BTC-USD.")
         return None
 
+def get_fundamentals(ticker):
+    try:
+        stock = yf.Ticker(ticker)
+        info = stock.info
+        return {
+            "Market Cap": info.get("marketCap", "N/A"),
+            "P/E Ratio": info.get("trailingPE", "N/A"),
+            "52 Wk High": info.get("fiftyTwoWeekHigh", "N/A"),
+            "Sector": info.get("sector", "N/A")
+        }
+    except:
+        return None
+
 def train_and_predict(data):
     # Split Data (Train on old, Test on recent)
     # We use everything EXCEPT the last row for training
@@ -88,6 +101,14 @@ if st.button("Generate Prediction"):
         data = get_data(ticker)
         
         if data is not None:
+            # ... inside the main loop ...
+            fund_data = get_fundamentals(ticker)
+            if fund_data:
+                st.sidebar.markdown("### 📊 Fundamental Data")
+                st.sidebar.write(f"**Sector:** {fund_data['Sector']}")
+                # Format large numbers to be readable (e.g., 1T)
+                st.sidebar.write(f"**Market Cap:** {fund_data['Market Cap']}") 
+                st.sidebar.write(f"**P/E Ratio:** {fund_data['P/E Ratio']}")
             # Show the Raw Data Chart
             st.subheader(f"{ticker} Price Chart (5 Years)")
             st.line_chart(data['Close'])
@@ -124,5 +145,6 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
 
 
