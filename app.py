@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go # You might need to: python -m pip install plotly
+
 
 # --- 1. SET UP THE PAGE ---
 st.set_page_config(page_title="AI Market Predictor", layout="wide")
@@ -153,6 +155,7 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
 
 
 
