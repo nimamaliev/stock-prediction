@@ -97,10 +97,6 @@ def train_and_predict(data):
     
     return prediction, probability, model
 
-st.subheader("🆚 Benchmark Comparison (vs S&P 500)")
-spy_data = yf.download("SPY", period="1y", progress=False)['Close']
-stock_data = data['Close'].iloc[-252:] # Last 1 year
-
 # Normalize both to start at 100 so you can compare percentage growth
 norm_spy = spy_data / spy_data.iloc[0] * 100
 norm_stock = stock_data / stock_data.iloc[0] * 100
@@ -173,6 +169,7 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
 
 
 
