@@ -155,3 +155,4 @@ if st.button("Generate Prediction"):
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
 
+
