@@ -97,6 +97,24 @@ def train_and_predict(data):
     
     return prediction, probability, model
 
+st.subheader("🆚 Benchmark Comparison (vs S&P 500)")
+spy_data = yf.download("SPY", period="1y", progress=False)['Close']
+stock_data = data['Close'].iloc[-252:] # Last 1 year
+
+# Normalize both to start at 100 so you can compare percentage growth
+norm_spy = spy_data / spy_data.iloc[0] * 100
+norm_stock = stock_data / stock_data.iloc[0] * 100
+
+comp_df = pd.DataFrame({
+    f"{ticker}": norm_stock,
+    "S&P 500": norm_spy
+})
+st.line_chart(comp_df)
+
+st.sidebar.markdown("### ⚙️ Strategy Settings")
+# Let the user choose how strict the AI should be
+confidence_threshold = st.sidebar.slider("Confidence Threshold", 0.50, 0.90, 0.60)
+
 # --- 4. THE MAIN EXECUTION ---
 if st.button("Generate Prediction"):
     with st.spinner(f"Analyzing {ticker}..."):
@@ -155,6 +173,7 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
 
 
 
