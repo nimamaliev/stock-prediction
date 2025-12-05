@@ -156,3 +156,4 @@ else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
 
 
+
