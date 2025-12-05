@@ -6,10 +6,9 @@ from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go # You might need to: python -m pip install plotly
 
-
 # --- 1. SET UP THE PAGE ---
 st.set_page_config(page_title="AI Market Predictor", layout="wide")
-st.title("🤖 AI Stock Trader")
+st.title("🤖 AI Stock Swing Trader")
 st.markdown("Enter a ticker symbol to train a Random Forest model on its history and predict the next 5 days.")
 
 # --- 2. SIDEBAR INPUTS ---
@@ -27,7 +26,7 @@ def get_data(ticker):
         if isinstance(df.columns, pd.MultiIndex):
             df = df['Close']
         else:
-            df = df[['Open', 'High', 'Low', 'Close']]
+            df = df[['Close']]
             
         df = df.rename(columns={'Close': 'Close', ticker: 'Close'})
         
@@ -97,45 +96,15 @@ def train_and_predict(data):
     
     return prediction, probability, model
 
-# Normalize both to start at 100 so you can compare percentage growth
-norm_spy = spy_data / spy_data.iloc[0] * 100
-norm_stock = stock_data / stock_data.iloc[0] * 100
-
-comp_df = pd.DataFrame({
-    f"{ticker}": norm_stock,
-    "S&P 500": norm_spy
-})
-st.line_chart(comp_df)
-
-st.sidebar.markdown("### ⚙️ Strategy Settings")
-# Let the user choose how strict the AI should be
-confidence_threshold = st.sidebar.slider("Confidence Threshold", 0.50, 0.90, 0.60)
-
 # --- 4. THE MAIN EXECUTION ---
 if st.button("Generate Prediction"):
     with st.spinner(f"Analyzing {ticker}..."):
         data = get_data(ticker)
         
         if data is not None:
-            # ... inside the main loop ...
-            fund_data = get_fundamentals(ticker)
-            if fund_data:
-                st.sidebar.markdown("### 📊 Fundamental Data")
-                st.sidebar.write(f"**Sector:** {fund_data['Sector']}")
-                # Format large numbers to be readable (e.g., 1T)
-                st.sidebar.write(f"**Market Cap:** {fund_data['Market Cap']}") 
-                st.sidebar.write(f"**P/E Ratio:** {fund_data['P/E Ratio']}")
             # Show the Raw Data Chart
             st.subheader(f"{ticker} Price Chart (5 Years)")
-            # Create a CandleStick Chart
-            fig = go.Figure(data=[go.Candlestick(x=data.index,
-                            open=data['Open'],
-                            high=data['High'],
-                            low=data['Low'],
-                            close=data['Close'])])
-            
-            fig.update_layout(title=f"{ticker} Interactive Chart", xaxis_rangeslider_visible=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.line_chart(data['Close'])
             
             # Run the AI
             pred, prob, model = train_and_predict(data)
@@ -169,10 +138,3 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
-
-
-
-
-
-
-
