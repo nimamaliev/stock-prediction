@@ -113,11 +113,7 @@ if st.button("Generate Prediction"):
             # Show the Raw Data Chart
             st.subheader(f"{ticker} Price Chart (5 Years)")
             # Create a CandleStick Chart
-            fig = go.Figure(data=[go.Candlestick(x=data.index,
-                            open=data['Open'],
-                            high=data['High'],
-                            low=data['Low'],
-                            close=data['Close'])])
+            fig = go.Figure(data=[go.Candlestick(x=data.index,open=data['Open'],high=data['High'],low=data['Low'],close=data['Close'])])
             
             fig.update_layout(title=f"{ticker} Interactive Chart", xaxis_rangeslider_visible=False)
             st.plotly_chart(fig, use_container_width=True)
@@ -154,6 +150,7 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
 
 
 
