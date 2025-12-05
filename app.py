@@ -102,9 +102,25 @@ if st.button("Generate Prediction"):
         data = get_data(ticker)
         
         if data is not None:
+            # ... inside the main loop ...
+            fund_data = get_fundamentals(ticker)
+            if fund_data:
+                st.sidebar.markdown("### 📊 Fundamental Data")
+                st.sidebar.write(f"**Sector:** {fund_data['Sector']}")
+                # Format large numbers to be readable (e.g., 1T)
+                st.sidebar.write(f"**Market Cap:** {fund_data['Market Cap']}") 
+                st.sidebar.write(f"**P/E Ratio:** {fund_data['P/E Ratio']}")
             # Show the Raw Data Chart
             st.subheader(f"{ticker} Price Chart (5 Years)")
-            st.line_chart(data['Close'])
+            # Create a CandleStick Chart
+            fig = go.Figure(data=[go.Candlestick(x=data.index,
+                            open=data['Open'],
+                            high=data['High'],
+                            low=data['Low'],
+                            close=data['Close'])])
+            
+            fig.update_layout(title=f"{ticker} Interactive Chart", xaxis_rangeslider_visible=False)
+            st.plotly_chart(fig, use_container_width=True)
             
             # Run the AI
             pred, prob, model = train_and_predict(data)
@@ -138,3 +154,4 @@ if st.button("Generate Prediction"):
 
 else:
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
+
