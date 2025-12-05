@@ -123,18 +123,6 @@ if st.button("Generate Prediction"):
             st.warning("⚠️ Disclaimer: This is an educational project. Not financial advice.")
 
 else:
-
     st.info("Enter a ticker on the left and click 'Generate Prediction'")
 
-def get_fundamentals(ticker):
-    try:
-        stock = yf.Ticker(ticker)
-        info = stock.info
-        return {
-            "Market Cap": info.get("marketCap", "N/A"),
-            "P/E Ratio": info.get("trailingPE", "N/A"),
-            "52 Wk High": info.get("fiftyTwoWeekHigh", "N/A"),
-            "Sector": info.get("sector", "N/A")
-        }
-    except:
-        return None
+
